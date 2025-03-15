@@ -20,6 +20,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
+      - name: Download Artifact
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          github_token: ${{ secrets.PAT_TOKEN }}
+          workflow: build.yml
+          name: PayTheBills-win-x64
+          repo: Alexey-Borzenkov/pay-the-bills
+          path: public/downloads
+          
+      - name: Prepare Download
+        run: |
+          mkdir -p public/downloads
+          cd public/downloads
+          zip -r meter-reader-win-x64.zip PayTheBills-win-x64/
+      
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
