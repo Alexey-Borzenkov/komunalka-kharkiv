@@ -21,19 +21,19 @@ jobs:
       - uses: actions/checkout@v4
       
       - name: Download Artifact
-        uses: dawidd6/action-download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
-          github_token: ${{ secrets.PAT_TOKEN }}
-          run_id: 13617445101
+          github-token: ${{ secrets.PAT_TOKEN }}
+          repository: Alexey-Borzenkov/PayTheBills
+          run-id: 13617445101
           name: PayTheBills-win-x64
-          repo: Alexey-Borzenkov/PayTheBills
           path: public/downloads
           
       - name: Prepare Download
         run: |
           mkdir -p public/downloads
           cd public/downloads
-          zip -r meter-reader-win-x64.zip PayTheBills-win-x64/
+          zip -r meter-reader-win-x64.zip *
       
       - name: Setup Node
         uses: actions/setup-node@v4
