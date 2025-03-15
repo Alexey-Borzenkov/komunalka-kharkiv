@@ -1,4 +1,8 @@
+import { usePathname } from 'next/navigation'
+
 export default function Home() {
+  const basePath = process.env.NODE_ENV === 'production' ? '/komunalka-kharkiv' : ''
+  
   return (
     <main className="min-h-screen bg-white">
       <div className="container mx-auto px-4 py-16">
@@ -32,7 +36,7 @@ export default function Home() {
               Завантажте додаток для Windows та почніть користуватися прямо зараз
             </p>
             <a 
-              href="/downloads/meter-reader-win-x64.zip"
+              href={`${basePath}/downloads/meter-reader-win-x64.zip`}
               className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
             >
               Завантажити для Windows
