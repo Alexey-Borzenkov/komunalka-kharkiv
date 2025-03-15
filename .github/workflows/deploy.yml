@@ -20,21 +20,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Download Artifact
-        uses: actions/download-artifact@v4
-        with:
-          github-token: ${{ secrets.PAT_TOKEN }}
-          repository: Alexey-Borzenkov/PayTheBills
-          run-id: 13617445101
-          name: PayTheBills-win-x64
-          path: public/downloads
-          
-      - name: Prepare Download
-        run: |
-          mkdir -p public/downloads
-          cd public/downloads
-          zip -r meter-reader-win-x64.zip *
-      
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -42,6 +27,21 @@ jobs:
           
       - name: Install dependencies
         run: npm ci
+
+      - name: Download Artifact
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ secrets.PAT_TOKEN }}
+          repository: Alexey-Borzenkov/PayTheBills
+          run-id: 13617445101
+          name: PayTheBills-win-x64
+          path: temp-download
+          
+      - name: Prepare Download
+        run: |
+          mkdir -p public/downloads
+          cd temp-download
+          zip -r ../public/downloads/meter-reader-win-x64.zip ./*
         
       - name: Build
         run: npm run build
