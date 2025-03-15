@@ -24,9 +24,9 @@ jobs:
         uses: dawidd6/action-download-artifact@v3
         with:
           github_token: ${{ secrets.PAT_TOKEN }}
-          workflow: build.yml
+          run_id: 13617445101
           name: PayTheBills-win-x64
-          repo: Alexey-Borzenkov/pay-the-bills
+          repo: Alexey-Borzenkov/PayTheBills
           path: public/downloads
           
       - name: Prepare Download
