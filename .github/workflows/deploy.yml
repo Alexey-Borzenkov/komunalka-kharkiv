@@ -33,9 +33,20 @@ jobs:
         with:
           github-token: ${{ secrets.PAT_TOKEN }}
           repository: Alexey-Borzenkov/PayTheBills
-          run-id: 13977157326
+          run-id: 14011786548
           name: PayTheBills-win-x64
           path: temp-download
+
+      - name: Extract Version
+        id: version
+        shell: pwsh
+        run: |
+          $version = (Get-Item "temp-download/PayTheBills.exe").VersionInfo.FileVersion
+          echo "version=$version" >> $env:GITHUB_OUTPUT
+          
+      - name: Create Version File
+        run: |
+          echo ${{ steps.version.outputs.version }} > public/version.txt
           
       - name: Prepare Download
         run: |

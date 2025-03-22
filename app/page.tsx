@@ -1,7 +1,15 @@
-import { usePathname } from 'next/navigation'
+async function getVersion() {
+  try {
+    const response = await fetch('version.txt')
+    return await response.text()
+  } catch {
+    return 'latest'
+  }
+}
 
-export default function Home() {
+export default async function Home() {
   const basePath = process.env.NODE_ENV === 'production' ? '/komunalka-kharkiv' : ''
+  const version = await getVersion()
   
   return (
     <main className="min-h-screen bg-white">
@@ -35,12 +43,15 @@ export default function Home() {
             <p className="text-gray-600 mb-4">
               Завантажте додаток для Windows та почніть користуватися прямо зараз
             </p>
-            <a 
-              href={`${basePath}/downloads/meter-reader-win-x64.zip`}
-              className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              Завантажити для Windows
-            </a>
+            <div className="space-y-2">
+              <a 
+                href={`${basePath}/downloads/meter-reader-win-x64.zip`}
+                className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Завантажити для Windows
+              </a>
+              <p className="text-sm text-gray-500">Версія {version}</p>
+            </div>
           </div>
         </div>
       </div>
