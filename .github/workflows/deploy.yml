@@ -41,11 +41,29 @@ jobs:
         id: version
         shell: pwsh
         run: |
-          $filePath = Join-Path "temp-download" "PayTheBills.exe"
-          $version = (Get-Item $filePath).VersionInfo.FileVersion
-          if ([string]::IsNullOrEmpty($version)) {
+          $filePath = Join-Path (Get-Location) "temp-download" "PayTheBills.exe"
+          Write-Host "Looking for file at: $filePath"
+          if (Test-Path $filePath) {
+            $file = Get-Item $filePath
+            Write-Host "File found. Accessing version info..."
+            try {
+              $versionInfo = $file.VersionInfo
+              Write-Host "Version info: $($versionInfo | Format-List | Out-String)"
+              $version = $versionInfo.FileVersion
+              if ([string]::IsNullOrEmpty($version)) {
+                Write-Host "FileVersion is empty, trying ProductVersion..."
+                $version = $versionInfo.ProductVersion
+              }
+            }
+            catch {
+              Write-Host "Error accessing version info: $_"
+              $version = "1.0.0"
+            }
+          } else {
+            Write-Host "File not found"
             $version = "1.0.0"
           }
+          Write-Host "Final version: $version"
           "version=$version" >> $env:GITHUB_OUTPUT
           
       - name: Create Version File
