@@ -55,6 +55,7 @@ jobs:
           "version=$version" >> $env:GITHUB_OUTPUT
 
       - name: Update Version in Page
+        shell: pwsh
         run: |
           $version = "${{ steps.version.outputs.version }}"
           $content = Get-Content -Path "app/page.tsx" -Raw
