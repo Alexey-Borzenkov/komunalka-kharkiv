@@ -1,17 +1,32 @@
 async function getVersion() {
   try {
     const basePath = process.env.NODE_ENV === 'production' ? '/komunalka-kharkiv' : ''
+    console.log('Fetching version from:', `${basePath}/version.txt`)
+    
     const response = await fetch(`${basePath}/version.txt`, { 
+      next: { revalidate: 0 },
       cache: 'no-store',
       headers: {
-        'Cache-Control': 'no-cache'
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
       }
     })
-    if (!response.ok) throw new Error('Failed to fetch version')
+
+    console.log('Response status:', response.status)
+    console.log('Response headers:', Object.fromEntries(response.headers.entries()))
+
+    if (!response.ok) {
+      console.error('Response not OK:', response.statusText)
+      throw new Error(`Failed to fetch version: ${response.statusText}`)
+    }
+
     const version = await response.text()
-    return version.trim()
+    const trimmedVersion = version.trim()
+    console.log('Fetched version:', trimmedVersion)
+    return trimmedVersion
   } catch (error) {
-    console.error('Failed to fetch version:', error)
+    console.error('Error fetching version:', error instanceof Error ? error.message : String(error))
     return 'latest'
   }
 }
