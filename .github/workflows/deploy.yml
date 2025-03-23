@@ -33,7 +33,7 @@ jobs:
         with:
           github-token: ${{ secrets.PAT_TOKEN }}
           repository: Alexey-Borzenkov/PayTheBills
-          run-id: 14011786548
+          run-id: 14015965230
           name: PayTheBills-win-x64
           path: temp-download
 
