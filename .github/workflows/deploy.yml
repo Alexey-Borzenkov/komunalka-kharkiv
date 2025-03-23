@@ -41,31 +41,19 @@ jobs:
         id: version
         shell: pwsh
         run: |
-          $filePath = Join-Path (Get-Location) "temp-download" "PayTheBills.exe"
-          Write-Host "Looking for file at: $filePath"
-          if (Test-Path $filePath) {
-            $file = Get-Item $filePath
-            Write-Host "File found. Accessing version info..."
-            try {
-              $versionInfo = $file.VersionInfo
-              Write-Host "Version info: $($versionInfo | Format-List | Out-String)"
-              $version = $versionInfo.FileVersion
-              if ([string]::IsNullOrEmpty($version)) {
-                Write-Host "FileVersion is empty, trying ProductVersion..."
-                $version = $versionInfo.ProductVersion
-              }
-            }
-            catch {
-              Write-Host "Error accessing version info: $_"
-              $version = "1.0.0"
-            }
+          $versionFile = Join-Path (Get-Location) "temp-download" "version.txt"
+          Write-Host "Looking for version file at: $versionFile"
+          if (Test-Path $versionFile) {
+            $version = Get-Content $versionFile -Raw
+            $version = $version.Trim()
+            Write-Host "Version extracted: $version"
           } else {
-            Write-Host "File not found"
+            Write-Host "Version file not found"
             $version = "1.0.0"
           }
           Write-Host "Final version: $version"
           "version=$version" >> $env:GITHUB_OUTPUT
-          
+
       - name: Create Version File
         run: |
           mkdir -p public
@@ -75,7 +63,7 @@ jobs:
         run: |
           mkdir -p public/downloads
           cd temp-download
-          zip -r ../public/downloads/meter-reader-win-x64.zip ./*
+          zip -r ../public/downloads/meter-reader-win-x64.zip ./* -x "version.txt"
         
       - name: Build
         run: npm run build
