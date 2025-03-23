@@ -54,10 +54,12 @@ jobs:
           Write-Host "Final version: $version"
           "version=$version" >> $env:GITHUB_OUTPUT
 
-      - name: Create Version File
+      - name: Update Version in Page
         run: |
-          mkdir -p public
-          echo "${{ steps.version.outputs.version }}" > public/version.txt
+          $version = "${{ steps.version.outputs.version }}"
+          $content = Get-Content -Path "app/page.tsx" -Raw
+          $content = $content -replace "'1.0.0' // This will be replaced by the actual version during build", "'$version'"
+          Set-Content -Path "app/page.tsx" -Value $content -NoNewline
           
       - name: Prepare Download
         run: |
