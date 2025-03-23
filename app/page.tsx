@@ -1,16 +1,25 @@
 async function getVersion() {
   try {
-    const response = await fetch('version.txt')
-    return await response.text()
-  } catch {
+    const basePath = process.env.NODE_ENV === 'production' ? '/komunalka-kharkiv' : ''
+    const response = await fetch(`${basePath}/version.txt`, { 
+      cache: 'no-store',
+      headers: {
+        'Cache-Control': 'no-cache'
+      }
+    })
+    if (!response.ok) throw new Error('Failed to fetch version')
+    const version = await response.text()
+    return version.trim()
+  } catch (error) {
+    console.error('Failed to fetch version:', error)
     return 'latest'
   }
 }
 
 export default async function Home() {
-  const basePath = process.env.NODE_ENV === 'production' ? '/komunalka-kharkiv' : ''
   const version = await getVersion()
-  
+  const basePath = process.env.NODE_ENV === 'production' ? '/komunalka-kharkiv' : ''
+
   return (
     <main className="min-h-screen bg-white">
       <div className="container mx-auto px-4 py-16">
@@ -43,14 +52,14 @@ export default async function Home() {
             <p className="text-gray-600 mb-4">
               Завантажте додаток для Windows та почніть користуватися прямо зараз
             </p>
-            <div className="space-y-2">
+            <div className="flex flex-col items-start gap-2">
               <a 
                 href={`${basePath}/downloads/meter-reader-win-x64.zip`}
                 className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
               >
                 Завантажити для Windows
               </a>
-              <p className="text-sm text-gray-500">Версія {version}</p>
+              <span className="text-sm text-gray-500">Версія {version}</span>
             </div>
           </div>
         </div>
